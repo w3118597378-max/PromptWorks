@@ -38,6 +38,7 @@ from app.services.prompt_test_engine import (
     PromptTestExecutionError,
     execute_prompt_test_experiment,
 )
+from app.services.report_service import build_report_html
 from app.services.prompt_test_ai_scoring import (
     AIScoringConfig,
     PromptTestAIScoringError,
@@ -581,6 +582,30 @@ def execute_existing_experiment(
     db.commit()
     db.refresh(experiment)
     return experiment
+
+
+@router.get(
+    "/tasks/{task_id}/report",
+    responses={200: {"content": {"text/html": {}}}},
+    response_class=Response,
+)
+def export_task_report(*, db: Session = Depends(get_db), task_id: int) -> Response:
+    """导出测试任务的 AI 评测报告（HTML，浏览器可直接打印为 PDF）。
+
+    改造点（方案 2.4）：评测报告导出，运营/交付场景的可归档证据。
+    """
+
+    task = _get_task_or_404(db, task_id)
+    summary = build_task_score_summary(db, task_id)
+    task_info = {"name": task.name, "id": task.id}
+    html_doc = build_report_html(task_info, summary)
+
+    filename = f"promptworks-report-task-{task.id}.html"
+    return Response(
+        content=html_doc,
+        media_type="text/html; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 __all__ = ["router"]
