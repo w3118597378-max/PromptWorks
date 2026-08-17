@@ -319,9 +319,99 @@ a {
   --el-drawer-bg-color: var(--board-raised);
 }
 
+/* ============================================================
+   组件配色统一（Element Plus 默认蓝 -> 暖墨 + 琥珀信号）
+   ============================================================ */
+/* 标签：暖色系，无高饱和冲突 */
 .el-tag {
+  --el-tag-bg-color: var(--board-raised);
+  --el-tag-border-color: var(--board-line-strong);
+  --el-tag-text-color: var(--flap-dim);
+  border-radius: 2px;
   font-family: var(--font-display);
   letter-spacing: 0.04em;
+}
+
+.el-tag--success {
+  --el-tag-bg-color: transparent;
+  --el-tag-border-color: rgba(90, 163, 120, 0.5);
+  --el-tag-text-color: var(--lamp-green);
+}
+
+.el-tag--warning {
+  --el-tag-bg-color: transparent;
+  --el-tag-border-color: rgba(217, 150, 47, 0.5);
+  --el-tag-text-color: var(--lamp-amber);
+}
+
+.el-tag--danger {
+  --el-tag-bg-color: transparent;
+  --el-tag-border-color: rgba(193, 87, 79, 0.5);
+  --el-tag-text-color: var(--lamp-red);
+}
+
+.el-tag--info {
+  --el-tag-bg-color: transparent;
+  --el-tag-border-color: var(--board-line-strong);
+  --el-tag-text-color: var(--flap-dim);
+}
+
+/* 单选按钮组：激活态琥珀 */
+.el-radio-button__original-radio:checked + .el-radio-button__inner,
+.el-radio-button.is-active .el-radio-button__inner {
+  --el-radio-button-checked-bg-color: var(--lamp-amber);
+  --el-radio-button-checked-text-color: #1e1b17;
+  --el-radio-button-checked-border-color: var(--lamp-amber);
+  --el-radio-button-checked-shadow: -1px 0 0 0 var(--lamp-amber);
+  font-weight: 600;
+}
+
+.el-radio-button__inner {
+  --el-radio-button-bg-color: var(--board-black);
+  --el-radio-button-text-color: var(--flap-dim);
+  --el-radio-button-border-color: var(--board-line-strong);
+}
+
+/* 输入框/下拉：focus 琥珀而不是默认蓝 */
+.el-input__wrapper.is-focus,
+.el-select__wrapper.is-focused,
+.el-textarea__inner:focus {
+  --el-input-focus-border-color: var(--lamp-amber);
+  box-shadow: 0 0 0 1px var(--lamp-amber) inset;
+}
+
+/* 下拉/气泡 hover：暖墨 */
+.el-dropdown-menu__item:not(.is-disabled):hover,
+.el-select-dropdown__item.is-hovering,
+.el-dropdown-menu__item:not(.is-disabled):focus {
+  background: var(--board-raised);
+  color: var(--lamp-amber);
+}
+
+/* 表格表头/边框暖化 */
+.el-table th.el-table__cell {
+  color: var(--flap-faint);
+  font-weight: 600;
+}
+
+/* 分页激活 */
+.el-pagination.is-background .el-pager li.is-active {
+  --el-pagination-active-bg-color: var(--lamp-amber);
+  --el-pagination-active-color: #1e1b17;
+}
+
+/* 滑块/开关/进度条主色 */
+.el-switch.is-checked .el-switch__core {
+  --el-switch-on-color: var(--lamp-green);
+}
+
+.el-progress-bar__inner {
+  background-color: var(--lamp-amber);
+}
+
+/* 评分星星 */
+.el-rate__icon.is-active {
+  color: var(--lamp-amber);
 }
 
 .el-table {

@@ -766,9 +766,17 @@ onUnmounted(() => {
 }
 
 .station-bar__clock {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: baseline;
   gap: 10px;
+  padding: 4px 20px;
+  border: 1px solid var(--board-line);
+  border-radius: 4px;
+  background: var(--board-black);
 }
 
 .station-clock {
@@ -1025,6 +1033,13 @@ onUnmounted(() => {
   .station-bar__clock-label,
   .station-bar__sub {
     display: none;
+  }
+
+  .station-bar__clock {
+    left: auto;
+    right: 84px;
+    transform: translateY(-50%);
+    padding: 2px 8px;
   }
 
   .station-clock {
