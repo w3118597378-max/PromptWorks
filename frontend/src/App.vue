@@ -8,7 +8,7 @@
       <!-- 站厅顶栏：站名 + 线路 + 时钟 -->
       <header class="station-bar">
         <div class="station-bar__brand">
-          <span class="station-bar__line">PW</span>
+          <img src="/logo.png" alt="PromptWorks" class="station-bar__logo" />
           <div class="station-bar__name">
             <span class="station-bar__title">PromptWorks</span>
             <span class="station-bar__sub">{{ t('app.stationSubtitle') }}</span>
@@ -23,9 +23,7 @@
       <el-container class="app-container">
         <el-aside width="224px" class="side-nav">
           <div class="brand-row">
-            <div class="brand-badge" aria-hidden="true">
-              <span class="brand-badge__text">PW</span>
-            </div>
+            <img src="/logo.png" alt="PromptWorks" class="brand-logo" />
             <div class="brand-copy">
               <span class="app-title">PromptWorks</span>
               <span class="app-subtitle">{{ t('app.stationSubtitle') }}</span>
@@ -302,13 +300,13 @@ const themeColorOptions: ThemeColorOption[] = [
   {
     value: 'amber',
     labelKey: 'app.themeColorAmber',
-    primary: '#ffb020',
-    dark2: '#d18f14',
-    light3: '#ffc94d',
-    light5: '#ffd97d',
-    light7: '#ffe8ad',
-    light8: '#fff1d1',
-    light9: '#fff8e6'
+    primary: '#d9962f',
+    dark2: '#b57f26',
+    light3: '#e2a84a',
+    light5: '#eabf77',
+    light7: '#f0d5a8',
+    light8: '#f5e4c8',
+    light9: '#faf0de'
   },
   {
     value: 'blue',
@@ -727,9 +725,8 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 0 24px 0 252px;
-  background: rgba(12, 13, 15, 0.92);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--board-line-strong);
+  background: #1a1815;
+  border-bottom: 1px solid var(--board-line);
 }
 
 .station-bar__brand {
@@ -738,19 +735,11 @@ onUnmounted(() => {
   gap: 12px;
 }
 
-.station-bar__line {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
+.station-bar__logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
   border-radius: 4px;
-  background: var(--lamp-amber);
-  color: #14161a;
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
 }
 
 .station-bar__name {
@@ -815,34 +804,12 @@ onUnmounted(() => {
   padding: 0 20px;
 }
 
-.brand-badge {
+.brand-logo {
   width: 40px;
   height: 40px;
   flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: contain;
   border-radius: 6px;
-  background: var(--board-raised);
-  border: 1px solid var(--board-line-strong);
-  position: relative;
-}
-
-.brand-badge::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border: 1px dashed var(--board-line-strong);
-  border-radius: 3px;
-  pointer-events: none;
-}
-
-.brand-badge__text {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  color: var(--lamp-amber);
 }
 
 .brand-copy {
@@ -902,10 +869,10 @@ onUnmounted(() => {
 }
 
 .side-menu :deep(.el-menu-item.is-active) {
-  background: rgba(255, 176, 32, 0.1);
+  background: var(--board-raised);
   color: var(--lamp-amber);
   font-weight: 600;
-  border: 1px solid rgba(255, 176, 32, 0.25);
+  border-left: 2px solid var(--lamp-amber);
 }
 
 .side-menu :deep(.el-menu-item:hover) {
@@ -938,10 +905,9 @@ onUnmounted(() => {
   align-items: center;
   gap: 4px;
   padding: 3px;
-  border: 1px solid var(--board-line-strong);
-  border-radius: 6px;
-  background: rgba(27, 30, 36, 0.9);
-  backdrop-filter: blur(10px);
+  border: 1px solid var(--board-line);
+  border-radius: 4px;
+  background: #1a1815;
 }
 
 .global-action-button {

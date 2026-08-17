@@ -6,34 +6,34 @@
    ============================================================ */
 
 :root {
-  /* ---- 材质：磨砂黑面板系 ---- */
-  --cyc-black: #0c0d0f;        /* 最深底：站厅暗处 */
-  --board-black: #14161a;      /* 翻牌面板底 */
-  --board-raised: #1b1e24;     /* 面板抬升（卡片/浮层） */
-  --board-line: #2a2e36;       /* 分隔线/网格线 */
-  --board-line-strong: #3a3f4a;
+  /* ---- 材质：暖墨纸面系（编辑式，非霓虹黑） ---- */
+  --cyc-black: #171512;        /* 最深底：暖墨 */
+  --board-black: #1e1b17;      /* 翻牌面板底 */
+  --board-raised: #26221d;     /* 面板抬升（卡片/浮层） */
+  --board-line: #38332c;       /* 分隔线/网格线 */
+  --board-line-strong: #4d463c;
 
-  /* ---- 字符：白漆字母 ---- */
-  --flap-white: #f4f6f8;       /* 主要文字/字母 */
-  --flap-dim: #9aa1ac;         /* 次要文字/元数据 */
-  --flap-faint: #5c636e;       /* 占位/禁用 */
+  /* ---- 字符：暖白漆字母 ---- */
+  --flap-white: #f2ede4;       /* 主要文字/字母 */
+  --flap-dim: #a89f92;         /* 次要文字/元数据 */
+  --flap-faint: #6e675c;       /* 占位/禁用 */
 
-  /* ---- 状态灯：车站信号 ---- */
-  --lamp-amber: #ffb020;       /* 运行中/延误：琥珀 */
-  --lamp-red: #e5484d;         /* 取消/失败：暗红 */
-  --lamp-green: #3ddc97;       /* 准点/完成：站台绿 */
-  --lamp-blue: #4d9fff;        /* 信息/进行中 */
+  /* ---- 状态灯：信号色（克制，无发光） ---- */
+  --lamp-amber: #d9962f;       /* 运行中/延误：琥珀（降饱和） */
+  --lamp-red: #c1574f;         /* 取消/失败：暗红 */
+  --lamp-green: #5aa378;       /* 准点/完成：站台绿 */
+  --lamp-blue: #5d8bb8;        /* 信息/进行中 */
 
   /* ---- 排版 ---- */
-  --font-display: 'DIN Alternate', 'Bahnschrift', 'Arial Narrow', 'Microsoft YaHei', sans-serif;
+  --font-display: 'Bahnschrift', 'DIN Alternate', 'Franklin Gothic Medium', 'Microsoft YaHei', sans-serif;
   --font-body: 'Microsoft YaHei', 'PingFang SC', 'Segoe UI', sans-serif;
   --font-mono: 'Cascadia Mono', 'Consolas', 'Courier New', monospace;
 
   /* ---- 布局常量 ---- */
   --nav-width: 224px;
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
 
   /* ---- Element Plus 主题映射（暗色覆盖） ---- */
   --el-color-primary: var(--lamp-amber);
@@ -123,11 +123,11 @@ a {
   animation: flap-down 0.32s cubic-bezier(0.2, 0.8, 0.3, 1) both;
 }
 
-/* 状态灯 */
+/* 状态灯（静默信号，无霓虹发光） */
 .lamp {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   margin-right: 6px;
   vertical-align: middle;
@@ -136,18 +136,15 @@ a {
 
 .lamp--amber {
   background: var(--lamp-amber);
-  box-shadow: 0 0 6px var(--lamp-amber);
-  animation: lamp-pulse 1.6s ease-in-out infinite;
+  animation: lamp-pulse 2s ease-in-out infinite;
 }
 
 .lamp--green {
   background: var(--lamp-green);
-  box-shadow: 0 0 5px rgba(61, 220, 151, 0.6);
 }
 
 .lamp--red {
   background: var(--lamp-red);
-  box-shadow: 0 0 5px rgba(229, 72, 77, 0.5);
 }
 
 .lamp--off {
@@ -156,7 +153,7 @@ a {
 
 @keyframes lamp-pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.45; }
+  50% { opacity: 0.55; }
 }
 
 /* ---- 翻牌式等宽数字 ---- */
@@ -166,22 +163,14 @@ a {
   letter-spacing: 0.02em;
 }
 
-/* ---- 卡片：面板式 ---- */
+/* ---- 卡片：编辑式纸面 ---- */
 .flap-card {
   background: var(--board-black);
   border: 1px solid var(--board-line);
   border-radius: var(--radius-md);
   padding: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
   position: relative;
-}
-
-.flap-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-md);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 40%);
-  pointer-events: none;
 }
 
 /* ---- 车站站牌标题 ---- */
@@ -230,7 +219,6 @@ a {
 .flap-table tr:hover td {
   background: var(--board-raised);
 }
-
 .flap-table td.num,
 .flap-table th.num {
   text-align: right;
@@ -304,9 +292,9 @@ a {
 .el-button--primary {
   --el-button-bg-color: var(--lamp-amber);
   --el-button-border-color: var(--lamp-amber);
-  --el-button-text-color: #14161a;
-  --el-button-hover-bg-color: #ffc94d;
-  --el-button-hover-border-color: #ffc94d;
+  --el-button-text-color: #1e1b17;
+  --el-button-hover-bg-color: #e2a84a;
+  --el-button-hover-border-color: #e2a84a;
   font-weight: 600;
 }
 
@@ -471,18 +459,15 @@ a {
 
 .page-header__meta .el-tag.el-tag--warning::before {
   background: var(--lamp-amber);
-  box-shadow: 0 0 6px var(--lamp-amber);
-  animation: lamp-pulse 1.6s ease-in-out infinite;
+  animation: lamp-pulse 2s ease-in-out infinite;
 }
 
 .page-header__meta .el-tag.el-tag--success::before {
   background: var(--lamp-green);
-  box-shadow: 0 0 5px rgba(61, 220, 151, 0.6);
 }
 
 .page-header__meta .el-tag.el-tag--danger::before {
   background: var(--lamp-red);
-  box-shadow: 0 0 5px rgba(229, 72, 77, 0.5);
 }
 
 .page-header__meta .el-tag.el-tag--info::before {
