@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.png" />
@@ -7,6 +7,20 @@
     <title>PromptWorks</title>
   </head>
   <body>
+    <!--
+      THESIS: PromptWorks 是 Prompt 调度室：任务列表即发车时刻表，每行是活体班次，
+      状态由翻牌与信号灯表达，拒绝默认后台的灰白卡片堆。
+      OWN-WORLD: 磨砂黑面板 + 白色粗体字符 + 琥珀状态灯 + 等宽数字；站台网格暗纹；
+      面板抬升用近黑分层，信号色（琥珀运行/绿准点/红取消）承担全部状态语义。
+      STORY: 运营在调度室里看着一批 Prompt 测试发车、运行、准点或延误，评分即到站，
+      优化建议即下一班次的调度单。
+      FIRST VIEWPORT: 顶栏=站名+线路徽章+站台时钟；左栏=站牌导航；内容=时刻表
+      （任务行带状态灯/进度/分数），主操作按钮为琥珀 CTA。
+      FORM: split-flap concourse（车站翻牌时刻表），决策第 1 位，方向契约。
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the
+      finish review, the verdict, DESIGN.md, and every shipping raster carrying its
+      provenance.
+    -->
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

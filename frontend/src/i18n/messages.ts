@@ -14,6 +14,8 @@ export const messages = {
     },
     app: {
       title: 'PromptWorks 控制台',
+      stationSubtitle: 'Prompt 调度中心',
+      stationClock: '站台时间',
       settings: '设置',
       language: '语言',
       languageCn: '中文',
@@ -23,6 +25,7 @@ export const messages = {
       themeSystem: '跟随系统',
       themeSwitch: '主题切换',
       themeColor: '主题色',
+      themeColorAmber: '站台琥珀',
       themeColorBlue: '默认蓝',
       themeColorGreen: '清新绿',
       themeColorViolet: '灵感紫',
@@ -1373,6 +1376,8 @@ export const messages = {
     },
     app: {
       title: 'PromptWorks Console',
+      stationSubtitle: 'Prompt Dispatch Center',
+      stationClock: 'Station Time',
       settings: 'Settings',
       language: 'Language',
       languageCn: '中文',
@@ -1382,6 +1387,7 @@ export const messages = {
       themeSystem: 'Follow System',
       themeSwitch: 'Theme Switch',
       themeColor: 'Theme Color',
+      themeColorAmber: 'Station Amber',
       themeColorBlue: 'Default Blue',
       themeColorGreen: 'Fresh Green',
       themeColorViolet: 'Inspiration Violet',

@@ -1,11 +1,35 @@
 ﻿<template>
   <el-config-provider :locale="elementLocale">
-    <div class="app-shell">
+    <!-- 方向契约锚点见 index.html body 首注释（split-flap concourse 车站翻牌时刻表） -->
+    <div class="app-shell" :class="{ dark: isDarkTheme }">
+      <!-- 车站网格暗纹 -->
+      <div class="concourse-bg" aria-hidden="true" />
+
+      <!-- 站厅顶栏：站名 + 线路 + 时钟 -->
+      <header class="station-bar">
+        <div class="station-bar__brand">
+          <span class="station-bar__line">PW</span>
+          <div class="station-bar__name">
+            <span class="station-bar__title">PromptWorks</span>
+            <span class="station-bar__sub">{{ t('app.stationSubtitle') }}</span>
+          </div>
+        </div>
+        <div class="station-bar__clock">
+          <span class="station-clock" aria-hidden="true">{{ clockText }}</span>
+          <span class="station-bar__clock-label">{{ t('app.stationClock') }}</span>
+        </div>
+      </header>
+
       <el-container class="app-container">
-        <el-aside width="220px" class="side-nav">
+        <el-aside width="224px" class="side-nav">
           <div class="brand-row">
-            <img src="/logo.png" alt="PromptWorks" class="brand-logo" />
-            <span class="app-title">PromptWorks</span>
+            <div class="brand-badge" aria-hidden="true">
+              <span class="brand-badge__text">PW</span>
+            </div>
+            <div class="brand-copy">
+              <span class="app-title">PromptWorks</span>
+              <span class="app-subtitle">{{ t('app.stationSubtitle') }}</span>
+            </div>
           </div>
           <div class="side-divider" />
           <el-menu class="side-menu" :default-active="activeMenu" @select="handleMenuSelect">
@@ -259,7 +283,7 @@ const { t, locale } = useI18n()
 const language = ref<SupportedLocale>(locale.value as SupportedLocale)
 const elementLocale = computed(() => (language.value === 'zh-CN' ? zhCn : enUs))
 type ThemeMode = 'system' | 'light' | 'dark'
-type ThemeColor = 'blue' | 'green' | 'violet' | 'orange' | 'rose'
+type ThemeColor = 'amber' | 'blue' | 'green' | 'violet' | 'orange' | 'rose'
 interface ThemeColorOption {
   value: ThemeColor
   labelKey: string
@@ -275,6 +299,17 @@ interface ThemeColorOption {
 const THEME_MODE_STORAGE_KEY = 'promptworks-theme-mode'
 const THEME_COLOR_STORAGE_KEY = 'promptworks-theme-color'
 const themeColorOptions: ThemeColorOption[] = [
+  {
+    value: 'amber',
+    labelKey: 'app.themeColorAmber',
+    primary: '#ffb020',
+    dark2: '#d18f14',
+    light3: '#ffc94d',
+    light5: '#ffd97d',
+    light7: '#ffe8ad',
+    light8: '#fff1d1',
+    light9: '#fff8e6'
+  },
   {
     value: 'blue',
     labelKey: 'app.themeColorBlue',
@@ -344,16 +379,34 @@ function readStoredThemeMode(): ThemeMode {
 
 function readStoredThemeColor(): ThemeColor {
   if (typeof window === 'undefined') {
-    return 'blue'
+    return 'amber'
   }
   const stored = window.localStorage.getItem(THEME_COLOR_STORAGE_KEY)
   return themeColorOptions.some((item) => item.value === stored)
     ? (stored as ThemeColor)
-    : 'blue'
+    : 'amber'
 }
 
 const themeMode = ref<ThemeMode>(readStoredThemeMode())
 const themeColor = ref<ThemeColor>(readStoredThemeColor())
+
+/* 站厅时钟（翻牌风格，HH:MM:SS） */
+const clockText = ref('--:--:--')
+let clockTimer: number | undefined
+function tickClock() {
+  const now = new Date()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  clockText.value = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`
+}
+onMounted(() => {
+  tickClock()
+  clockTimer = window.setInterval(tickClock, 1000)
+})
+onUnmounted(() => {
+  if (clockTimer !== undefined) {
+    window.clearInterval(clockTimer)
+  }
+})
 const systemPrefersDark = ref(
   typeof window !== 'undefined'
     ? window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -657,69 +710,207 @@ onUnmounted(() => {
 <style scoped>
 .app-shell {
   min-height: 100vh;
-  background: var(--app-bg-color);
+  background: var(--cyc-black);
+  position: relative;
+  z-index: 1;
 }
 
+/* ---- 站厅顶栏 ---- */
+.station-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px 0 252px;
+  background: rgba(12, 13, 15, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--board-line-strong);
+}
+
+.station-bar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.station-bar__line {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  background: var(--lamp-amber);
+  color: #14161a;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.station-bar__name {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.station-bar__title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--flap-white);
+}
+
+.station-bar__sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--flap-faint);
+  text-transform: uppercase;
+}
+
+.station-bar__clock {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.station-clock {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--lamp-amber);
+  letter-spacing: 0.06em;
+}
+
+.station-bar__clock-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--flap-faint);
+}
+
+/* ---- 主体容器 ---- */
 .app-container {
   min-height: 100vh;
-  padding-left: 220px;
+  padding-left: 224px;
+  padding-top: 56px;
 }
 
+/* ---- 侧边站牌导航 ---- */
 .brand-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 64px;
+  gap: 12px;
+  height: 76px;
   padding: 0 20px;
 }
 
-.brand-logo {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  object-fit: cover;
+.brand-badge {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: var(--board-raised);
+  border: 1px solid var(--board-line-strong);
+  position: relative;
+}
+
+.brand-badge::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px dashed var(--board-line-strong);
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.brand-badge__text {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--lamp-amber);
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
 }
 
 .app-title {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--flap-white);
+}
+
+.app-subtitle {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--flap-faint);
+  margin-top: 2px;
 }
 
 .side-divider {
   height: 1px;
   margin: 0 16px 12px;
-  background: var(--side-border-color);
+  background: var(--board-line);
 }
 
 .side-nav {
   position: fixed;
-  inset: 0 auto 0 0;
-  z-index: 10;
-  height: 100vh;
-  background: var(--side-bg-color);
-  border-right: 1px solid var(--side-border-color);
-  overflow: hidden;
+  inset: 56px auto 0 0;
+  z-index: 30;
+  width: 224px;
+  height: calc(100vh - 56px);
+  background: var(--board-black);
+  border-right: 1px solid var(--board-line);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .side-menu {
   border-right: none;
   background: transparent;
+  padding: 4px 0;
 }
 
 .side-menu :deep(.el-menu-item) {
-  height: 44px;
-  margin: 4px 10px;
-  border-radius: 8px;
+  height: 40px;
+  margin: 3px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .side-menu :deep(.el-menu-item.is-active) {
-  background: var(--el-color-primary-light-9);
+  background: rgba(255, 176, 32, 0.1);
+  color: var(--lamp-amber);
+  font-weight: 600;
+  border: 1px solid rgba(255, 176, 32, 0.25);
 }
 
 .side-menu :deep(.el-menu-item:hover) {
-  background: var(--el-color-primary-light-9);
-  color: var(--el-color-primary);
+  background: var(--board-raised);
+  color: var(--flap-white);
 }
 
 .side-menu :deep(.el-menu-item:hover .el-icon),
@@ -727,40 +918,30 @@ onUnmounted(() => {
   color: inherit;
 }
 
-.dark .side-menu :deep(.el-menu-item:hover),
-.dark .side-menu :deep(.el-menu-item.is-active) {
-  background: var(--el-color-primary-dark-2);
-  color: var(--el-text-color-primary);
-}
-
-.dark .side-menu :deep(.el-menu-item:hover .el-icon),
-.dark .side-menu :deep(.el-menu-item.is-active .el-icon) {
-  color: var(--el-text-color-primary);
-}
-
 .main-view {
-  min-height: 100vh;
-  padding: 0 24px 24px;
-  background: var(--content-bg-color);
+  min-height: calc(100vh - 56px);
+  padding: 24px 28px 32px;
+  position: relative;
+  z-index: 1;
 }
 
 .main-toolbar-space {
-  height: 76px;
+  height: 12px;
 }
 
 .global-action-card {
   position: fixed;
-  top: 16px;
+  top: 10px;
   right: 24px;
-  z-index: 30;
+  z-index: 50;
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 5px;
-  border: 1px solid var(--el-border-color-light);
-  border-radius: 8px;
-  background: var(--header-bg-color);
-  box-shadow: var(--el-box-shadow-light);
+  padding: 3px;
+  border: 1px solid var(--board-line-strong);
+  border-radius: 6px;
+  background: rgba(27, 30, 36, 0.9);
+  backdrop-filter: blur(10px);
 }
 
 .global-action-button {
@@ -871,6 +1052,19 @@ onUnmounted(() => {
     padding-left: 72px;
   }
 
+  .station-bar {
+    padding: 0 16px 0 84px;
+  }
+
+  .station-bar__clock-label,
+  .station-bar__sub {
+    display: none;
+  }
+
+  .station-clock {
+    font-size: 16px;
+  }
+
   .side-nav {
     width: 72px !important;
   }
@@ -881,6 +1075,7 @@ onUnmounted(() => {
   }
 
   .app-title,
+  .app-subtitle,
   .side-menu :deep(.el-menu-item span) {
     display: none;
   }
@@ -892,16 +1087,16 @@ onUnmounted(() => {
   }
 
   .main-view {
-    padding: 0 16px 20px;
+    padding: 16px 16px 20px;
   }
 
   .main-toolbar-space {
-    height: 72px;
+    height: 8px;
   }
 
   .global-action-card {
-    top: 14px;
-    right: 16px;
+    top: 8px;
+    right: 12px;
   }
 }
 </style>

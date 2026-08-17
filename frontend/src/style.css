@@ -1,36 +1,68 @@
+/* ============================================================
+   PromptWorks 设计系统 — 车站翻牌时刻表 (Split-Flap Concourse)
+   ============================================================
+   磨砂黑面板 + 白色粗体字符 + 琥珀状态灯 + 等宽数字。
+   任务 = 班次；状态 = 翻牌；评分 = 到站。
+   ============================================================ */
+
 :root {
-  font-family: 'Microsoft YaHei', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  line-height: 1.6;
-  font-weight: 400;
-  color: #1f2329;
-  background-color: #f5f6f8;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* ---- 材质：磨砂黑面板系 ---- */
+  --cyc-black: #0c0d0f;        /* 最深底：站厅暗处 */
+  --board-black: #14161a;      /* 翻牌面板底 */
+  --board-raised: #1b1e24;     /* 面板抬升（卡片/浮层） */
+  --board-line: #2a2e36;       /* 分隔线/网格线 */
+  --board-line-strong: #3a3f4a;
 
-  --app-bg-color: #f5f6f8;
-  --header-bg-color: #ffffff;
-  --header-text-color: #1f2329;
-  --side-bg-color: #ffffff;
-  --side-border-color: #eaecf3;
-  --content-bg-color: #f8f9fb;
-  --text-weak-color: #606266;
+  /* ---- 字符：白漆字母 ---- */
+  --flap-white: #f4f6f8;       /* 主要文字/字母 */
+  --flap-dim: #9aa1ac;         /* 次要文字/元数据 */
+  --flap-faint: #5c636e;       /* 占位/禁用 */
+
+  /* ---- 状态灯：车站信号 ---- */
+  --lamp-amber: #ffb020;       /* 运行中/延误：琥珀 */
+  --lamp-red: #e5484d;         /* 取消/失败：暗红 */
+  --lamp-green: #3ddc97;       /* 准点/完成：站台绿 */
+  --lamp-blue: #4d9fff;        /* 信息/进行中 */
+
+  /* ---- 排版 ---- */
+  --font-display: 'DIN Alternate', 'Bahnschrift', 'Arial Narrow', 'Microsoft YaHei', sans-serif;
+  --font-body: 'Microsoft YaHei', 'PingFang SC', 'Segoe UI', sans-serif;
+  --font-mono: 'Cascadia Mono', 'Consolas', 'Courier New', monospace;
+
+  /* ---- 布局常量 ---- */
+  --nav-width: 224px;
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  /* ---- Element Plus 主题映射（暗色覆盖） ---- */
+  --el-color-primary: var(--lamp-amber);
+  --el-color-success: var(--lamp-green);
+  --el-color-danger: var(--lamp-red);
+  --el-color-warning: var(--lamp-amber);
+  --el-bg-color: var(--board-raised);
+  --el-bg-color-overlay: var(--board-raised);
+  --el-fill-color-blank: var(--board-black);
+  --el-fill-color-light: var(--board-line);
+  --el-text-color-primary: var(--flap-white);
+  --el-text-color-regular: var(--flap-dim);
+  --el-text-color-secondary: var(--flap-faint);
+  --el-border-color: var(--board-line);
+  --el-border-color-light: var(--board-line);
+  --el-border-color-lighter: var(--board-line);
+  --el-border-radius-base: var(--radius-sm);
+  --el-border-radius-small: 2px;
+  --el-font-family: var(--font-body);
+  --el-mask-color: rgba(0, 0, 0, 0.7);
 }
 
-.dark {
-  color: #f0f4f8;
-  background-color: #1a1c1f;
-
-  --app-bg-color: #1a1c1f;
-  --header-bg-color: #1f262f;
-  --header-text-color: #f0f4f8;
-  --side-bg-color: #1f262f;
-  --side-border-color: #2c323b;
-  --content-bg-color: #181c22;
-  --text-weak-color: #c0c4cc;
+html.dark {
+  --el-bg-color: var(--board-raised);
+  --el-bg-color-overlay: var(--board-raised);
+  --el-fill-color-blank: var(--board-black);
 }
 
+/* ---- 基础 ---- */
 *,
 *::before,
 *::after {
@@ -40,8 +72,13 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--app-bg-color);
-  color: var(--header-text-color);
+  background: var(--cyc-black);
+  color: var(--flap-white);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 #app {
@@ -53,6 +90,401 @@ a {
   text-decoration: none;
 }
 
-.el-main {
-  color: inherit;
+/* ---- 车站网格背景（棋盘格暗纹，非装饰性条纹） ---- */
+.concourse-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--board-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--board-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
+  opacity: 0.35;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 78%);
+}
+
+/* ---- 翻牌字符动画 ---- */
+@keyframes flap-down {
+  0% {
+    transform: translateY(-110%) perspective(400px) rotateX(-12deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) perspective(400px) rotateX(0);
+    opacity: 1;
+  }
+}
+
+.flap-char {
+  display: inline-block;
+  animation: flap-down 0.32s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+/* 状态灯 */
+.lamp {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  flex: none;
+}
+
+.lamp--amber {
+  background: var(--lamp-amber);
+  box-shadow: 0 0 6px var(--lamp-amber);
+  animation: lamp-pulse 1.6s ease-in-out infinite;
+}
+
+.lamp--green {
+  background: var(--lamp-green);
+  box-shadow: 0 0 5px rgba(61, 220, 151, 0.6);
+}
+
+.lamp--red {
+  background: var(--lamp-red);
+  box-shadow: 0 0 5px rgba(229, 72, 77, 0.5);
+}
+
+.lamp--off {
+  background: var(--board-line-strong);
+}
+
+@keyframes lamp-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+/* ---- 翻牌式等宽数字 ---- */
+.flap-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* ---- 卡片：面板式 ---- */
+.flap-card {
+  background: var(--board-black);
+  border: 1px solid var(--board-line);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  position: relative;
+}
+
+.flap-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 40%);
+  pointer-events: none;
+}
+
+/* ---- 车站站牌标题 ---- */
+.board-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--flap-white);
+}
+
+.board-subtitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--flap-faint);
+  text-transform: uppercase;
+}
+
+/* ---- 表格：时刻表 ---- */
+.flap-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.flap-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--flap-faint);
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--board-line-strong);
+  white-space: nowrap;
+}
+
+.flap-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--board-line);
+  color: var(--flap-dim);
+  vertical-align: middle;
+}
+
+.flap-table tr:hover td {
+  background: var(--board-raised);
+}
+
+.flap-table td.num,
+.flap-table th.num {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- 徽章：状态翻牌 ---- */
+.flap-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border: 1px solid var(--board-line-strong);
+  border-radius: 2px;
+  background: var(--board-black);
+}
+
+/* ---- 滚动条 ---- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cyc-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--board-line-strong);
+  border-radius: 5px;
+  border: 2px solid var(--cyc-black);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--flap-faint);
+}
+
+/* ---- 文本选中 ---- */
+::selection {
+  background: rgba(255, 176, 32, 0.3);
+  color: var(--flap-white);
+}
+
+/* ---- 焦点可见 ---- */
+:focus-visible {
+  outline: 1px solid var(--lamp-amber);
+  outline-offset: 2px;
+}
+
+/* ---- Element Plus 细节覆盖 ---- */
+.el-menu {
+  --el-menu-bg-color: transparent;
+  --el-menu-text-color: var(--flap-dim);
+  --el-menu-active-color: var(--flap-white);
+  --el-menu-hover-bg-color: var(--board-raised);
+  --el-menu-item-height: 40px;
+}
+
+.el-button {
+  --el-button-bg-color: var(--board-raised);
+  --el-button-border-color: var(--board-line-strong);
+  --el-button-text-color: var(--flap-white);
+  font-family: var(--font-body);
+}
+
+.el-button--primary {
+  --el-button-bg-color: var(--lamp-amber);
+  --el-button-border-color: var(--lamp-amber);
+  --el-button-text-color: #14161a;
+  --el-button-hover-bg-color: #ffc94d;
+  --el-button-hover-border-color: #ffc94d;
+  font-weight: 600;
+}
+
+.el-input__wrapper,
+.el-select__wrapper,
+.el-textarea__inner {
+  --el-input-bg-color: var(--board-black);
+  --el-input-border-color: var(--board-line);
+  --el-input-text-color: var(--flap-white);
+  --el-input-placeholder-color: var(--flap-faint);
+  --el-input-hover-border-color: var(--board-line-strong);
+  --el-input-focus-border-color: var(--lamp-amber);
+}
+
+.el-dialog {
+  --el-dialog-bg-color: var(--board-raised);
+  border: 1px solid var(--board-line-strong);
+  border-radius: var(--radius-lg);
+}
+
+.el-drawer {
+  --el-drawer-bg-color: var(--board-raised);
+}
+
+.el-tag {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+.el-table {
+  --el-table-bg-color: transparent;
+  --el-table-tr-bg-color: transparent;
+  --el-table-header-bg-color: var(--board-black);
+  --el-table-border-color: var(--board-line);
+  --el-table-text-color: var(--flap-dim);
+  --el-table-header-text-color: var(--flap-faint);
+}
+
+.el-card {
+  --el-card-bg-color: var(--board-black);
+  --el-card-border-color: var(--board-line);
+}
+
+.el-tabs__item {
+  color: var(--flap-dim);
+}
+
+.el-tabs__item.is-active {
+  color: var(--flap-white);
+}
+
+.el-tabs__active-bar {
+  background-color: var(--lamp-amber);
+}
+
+/* ============================================================
+   页面通用类适配（原项目 scoped 样式引用旧 token，全局兜底）
+   ============================================================ */
+:root {
+  /* 旧 token 别名，兼容各页面 scoped style */
+  --app-bg-color: var(--cyc-black);
+  --header-bg-color: var(--board-black);
+  --header-text-color: var(--flap-white);
+  --side-bg-color: var(--board-black);
+  --side-border-color: var(--board-line);
+  --content-bg-color: var(--cyc-black);
+  --text-weak-color: var(--flap-dim);
+}
+
+.page-header__text h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--flap-white);
+}
+
+.page-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--flap-dim);
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.tag-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--flap-faint);
+}
+
+/* 提示/空态文案统一 */
+.data-alert {
+  margin-top: 4px;
+}
+
+/* 详情页文本（多页面共用） */
+.detail-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--flap-white);
+}
+
+.meta-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--flap-faint);
+}
+
+/* ---- 任务状态翻牌标签（车站语义） ---- */
+.page-header__meta .el-tag {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 12px;
+  border-radius: 2px;
+  border: 1px solid var(--board-line-strong);
+  background: var(--board-black);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-header__meta .el-tag::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--flap-faint);
+}
+
+.page-header__meta .el-tag.el-tag--warning::before {
+  background: var(--lamp-amber);
+  box-shadow: 0 0 6px var(--lamp-amber);
+  animation: lamp-pulse 1.6s ease-in-out infinite;
+}
+
+.page-header__meta .el-tag.el-tag--success::before {
+  background: var(--lamp-green);
+  box-shadow: 0 0 5px rgba(61, 220, 151, 0.6);
+}
+
+.page-header__meta .el-tag.el-tag--danger::before {
+  background: var(--lamp-red);
+  box-shadow: 0 0 5px rgba(229, 72, 77, 0.5);
+}
+
+.page-header__meta .el-tag.el-tag--info::before {
+  background: var(--board-line-strong);
 }
