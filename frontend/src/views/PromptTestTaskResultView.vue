@@ -412,6 +412,9 @@
           <el-button type="primary" size="small" @click="exportUnitsCsv">
             {{ t('promptTestResult.actions.exportCsv') }}
           </el-button>
+          <el-button size="small" @click="exportTaskReport">
+            {{ t('promptTestResult.actions.exportReport') }}
+          </el-button>
         </div>
         <div v-if="filteredUnits.length" class="unit-card-grid">
           <el-card
@@ -808,6 +811,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
 import {
+  fetchTaskReport,
   getLatestPromptTestOptimizationRecommendation,
   getPromptTestAIScores,
   getPromptTestTask,
@@ -2554,6 +2558,27 @@ function confirmOptimizationVersion() {
     params: { taskId: currentTask.id },
     query: { promptVersionId: String(promptVersionId) }
   })
+}
+
+async function exportTaskReport() {
+  const taskId = routeTaskIdParam.value || (task.value ? String(task.value.id) : '')
+  if (!taskId) {
+    ElMessage.warning(t('promptTestResult.messages.exportUnavailable'))
+    return
+  }
+  try {
+    const htmlDoc = await fetchTaskReport(Number(taskId))
+    const blob = new Blob([htmlDoc], { type: 'text/html;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `promptworks-report-task-${taskId}.html`
+    link.click()
+    URL.revokeObjectURL(url)
+    ElMessage.success(t('promptTestResult.messages.exportReportSuccess'))
+  } catch (error: any) {
+    ElMessage.error(error?.message ?? t('promptTestResult.messages.exportReportFailed'))
+  }
 }
 
 function exportUnitsCsv() {

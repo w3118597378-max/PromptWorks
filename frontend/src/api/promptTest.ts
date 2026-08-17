@@ -1,4 +1,4 @@
-import { request } from './http'
+import { request, API_BASE_URL, type HttpError } from './http'
 import type {
   PromptTestTask,
   PromptTestTaskCreatePayload,
@@ -30,6 +30,18 @@ export function getPromptTestTask(taskId: number): Promise<PromptTestTask> {
   return request<PromptTestTask>(`${BASE_PATH}/tasks/${taskId}`, {
     method: 'GET'
   })
+}
+
+/** 导出任务评测报告（自包含 HTML，浏览器可打印为 PDF）。 */
+export async function fetchTaskReport(taskId: number): Promise<string> {
+  const response = await fetch(`${API_BASE_URL}${BASE_PATH}/tasks/${taskId}/report`)
+  if (!response.ok) {
+    const error: HttpError = new Error('报告导出失败')
+    error.status = response.status
+    error.payload = await response.text().catch(() => null)
+    throw error
+  }
+  return response.text()
 }
 
 export function deletePromptTestTask(taskId: number): Promise<void> {

@@ -1102,6 +1102,7 @@ export const messages = {
         removeSingleColumn: '移除列',
         columnCount: '当前列数：{count}',
         exportCsv: '导出 CSV',
+        exportReport: '导出报告',
         retryTask: '重试任务'
       },
       analysis: {
@@ -1247,7 +1248,10 @@ export const messages = {
         invalidTask: '无效的测试任务编号',
         invalidUnit: '无效的最小测试单元编号',
         unitLoadFailed: '加载最小测试单元详情失败，请稍后重试',
-        taskFailedTitle: '任务执行失败'
+        taskFailedTitle: '任务执行失败',
+        exportUnavailable: '当前无有效任务，无法导出报告',
+        exportReportSuccess: '评测报告已导出，可在浏览器中打印为 PDF',
+        exportReportFailed: '评测报告导出失败，请稍后重试'
       },
       fallback: {
         taskTitle: '测试任务 #{id}'
@@ -2459,6 +2463,7 @@ export const messages = {
         removeSingleColumn: 'Remove',
         columnCount: 'Columns: {count}',
         exportCsv: 'Export CSV',
+        exportReport: 'Export Report',
         retryTask: 'Retry Task'
       },
       analysis: {
@@ -2604,7 +2609,10 @@ export const messages = {
         invalidTask: 'Invalid test task id.',
         invalidUnit: 'Invalid test unit id.',
         unitLoadFailed: 'Failed to load test unit details. Please try again later.',
-        taskFailedTitle: 'Test task failed'
+        taskFailedTitle: 'Test task failed',
+        exportUnavailable: 'No valid task to export the report',
+        exportReportSuccess: 'Report exported. Open it in a browser to print as PDF.',
+        exportReportFailed: 'Failed to export the report. Please retry later.'
       },
       fallback: {
         taskTitle: 'Test Task #{id}'
