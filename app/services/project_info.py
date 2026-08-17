@@ -26,11 +26,11 @@ PROJECT_DESCRIPTION = (
     "PromptWorks 是一个聚焦 Prompt 资产管理与大模型运营的全栈解决方案，"
     "支持 Prompt 生命周期管理、模型配置、版本对比与评估实验。"
 )
-GITHUB_URL = "https://github.com/YellowSeaa/PromptWorks"
+GITHUB_URL = "https://github.com/w3118597378-max/PromptWorks"
 GITHUB_LATEST_RELEASE_API = (
-    "https://api.github.com/repos/YellowSeaa/PromptWorks/releases/latest"
+    "https://api.github.com/repos/w3118597378-max/PromptWorks/releases/latest"
 )
-DEFAULT_CONTACT_EMAIL = "hh81300889@gmail.com"
+DEFAULT_CONTACT_EMAIL = ""
 DEFAULT_VERSION = "v0.0.0"
 VERSION_PATTERN = re.compile(
     r"^v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)(?:-(?P<pre>[0-9A-Za-z.-]+))?$"

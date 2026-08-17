@@ -1,12 +1,20 @@
 ![PromptWorks Logo](logo.jpg)
 
-[中文](../README.md) | English | [Update](../CHANGELOG.md)
+[中文](../README.md) | English
 
 # PromptWorks: A Prompt Evaluation and Optimization Workspace for Teams
 
 PromptWorks is a full-stack solution for prompt asset management, batch evaluation, and AI-assisted optimization. The repository hosts a FastAPI backend together with a Vue + Element Plus frontend. It helps teams turn prompts from scattered “write-and-run” text snippets into versioned, testable, scoreable, and continuously improvable AI assets.
 
 The platform is built around a complete workflow: **manage prompts → configure test tasks → run multi-model / multi-version evaluations → diagnose with AI scoring → generate optimization recommendations → save improvements as new versions**. Whether you are building customer-service scripts, information extraction prompts, intelligent Q&A, or internal business assistants, the same workflow helps you continuously validate and improve prompt quality.
+
+## ⭐ Key Highlights
+
+PromptWorks treats prompts as **product assets that can be evaluated and optimized**, not "write-and-run" one-offs:
+
+- **Chinese Example Template Library**: 6 built-in Chinese prompt templates for real business scenarios (customer-service optimization, information extraction, long-text summarization, copy rewriting, intent classification, data analysis) — ready to use out of the box.
+- **Evaluation Report Export**: Render AI scoring results into a self-contained Chinese HTML report; print to PDF in the browser for review and archiving.
+- **Dispatch-Center Workspace**: Designed around a "Prompt dispatch center" concept — task lists presented as departure timetables, with warm-ink panels, amber signal lamps, and tabular numerals, making test status instantly readable.
 
 ![](frontend_en.png)
 
@@ -44,41 +52,33 @@ This loop is especially useful when prompts look similar but production behavior
 
 ## 🏗️ Architecture
 - **Backend Service**: Lives under `app/`, follows a FastAPI + SQLAlchemy layered structure with business logic encapsulated in `services/`.
-- **Database & Messaging**: Defaults to PostgreSQL and Redis, with optional Celery task queue capabilities.
+- **Database & Messaging**: Defaults to PostgreSQL and Redis.
 - **Frontend Application**: Located in `frontend/`, built with Vite to deliver prompt management and testing experiences.
 - **Unified Configuration**: Uses the root `.env` and front-end `VITE_` environment variables to decouple environment-specific settings.
 
 ## 🚀 Quick Start
-### Docker Deployment (Recommended)
-#### 1. Full-stack bootstrap (defaults to the `main` channel images)
+### Option 1: Local Development (Recommended)
+
+For hot-reload development, follow the 「Local code startup」 section below. For production, use the bundled Docker orchestration:
+
 ```bash
-docker compose pull backend frontend
+# Build and start all services (first build takes a while)
+docker compose build
 docker compose up -d
 ```
-- The compose file references `yellowseaa/promptworks:backend-main-latest` and `yellowseaa/promptworks:frontend-main-latest` and automatically starts PostgreSQL plus Redis.
-- To switch to the dev channel or a pinned version, set `BACKEND_IMAGE` / `FRONTEND_IMAGE` in `.env` or inline:  
-  `BACKEND_IMAGE=yellowseaa/promptworks:backend-dev-latest FRONTEND_IMAGE=yellowseaa/promptworks:frontend-dev-latest docker compose up -d`
 
-#### 2. Backend only
-Useful when debugging the API without the frontend:
-```bash
-docker pull yellowseaa/promptworks:backend-main-latest
-docker run -d --name promptworks-backend -p 8000:8000 yellowseaa/promptworks:backend-main-latest
-```
-> For custom domains, HTTPS, or API endpoints, fork and rebuild with new tags before pushing.
-
-#### 3. Access endpoints
+#### Access endpoints
 Frontend: `http://localhost:18080`  
 Backend API: `http://localhost:8000/api/v1`  
 PostgreSQL / Redis ports: `15432` / `6379`
 
-#### 4. Stop / clean up
+#### Stop / clean up
 ```bash
 docker compose down
 docker compose down -v   # remove volumes (data will be lost)
 ```
 
-#### 5. Service overview
+#### Service overview
 | Service | Description | Port | Extra Info |
 | --- | --- | --- | --- |
 | `postgres` | PostgreSQL database | 15432 | Default user, password, and database are `promptworks`. |
@@ -87,8 +87,6 @@ docker compose down -v   # remove volumes (data will be lost)
 | `frontend` | Nginx-hosted frontend assets | 18080 | Use `VITE_API_BASE_URL` to point to custom backend endpoints. |
 
 > Tip: customize ports or credentials by editing `docker-compose.yml` and rerun `docker compose up -d`.
->
-> ⚠️ Apple Silicon / ARM hosts: the CI pipeline already publishes `backend-*-latest` and `frontend-*-latest` as `linux/amd64 + linux/arm64` manifests, so you can pull them directly. When building custom images, remember to run `docker buildx build --platform linux/amd64,linux/arm64 ... --push`; otherwise Arm machines will hit `no matching manifest for linux/arm64`.
 
 ### Local Development From Source
 #### 1. Prerequisites
@@ -202,7 +200,3 @@ npm run build
 3. Open a pull request summarizing the change scope and verification steps; keep local commit messages concise and in Chinese.
 
 We welcome issues and suggestions—let’s build PromptWorks together!
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=YellowSeaa/PromptWorks&type=date&legend=top-left)](https://www.star-history.com/#YellowSeaa/PromptWorks&type=date&legend=top-left)

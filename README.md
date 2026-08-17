@@ -1,6 +1,6 @@
 ﻿![PromptWorks 标志](docs/logo.jpg)
 
-中文 | [English](docs/README_en.md) | [更新记录](CHANGELOG.md)
+中文 | [English](docs/README_en.md)
 
 # PromptWorks：面向团队的 Prompt 评估与优化工作台
 
@@ -8,15 +8,13 @@ PromptWorks 是一个聚焦 Prompt 资产管理、批量评估与 AI 优化的�
 
 平台围绕一条完整工作流设计：**管理 Prompt → 配置测试任务 → 运行多模型/多版本评估 → AI 评分诊断 → 生成优化建议 → 沉淀为新版本**。无论是客服话术、信息抽取、智能问答还是内部业务助手，都可以用同一套流程持续验证和改进提示词质量。
 
-## ⭐ 本项目特色改造
+## ⭐ 核心特色
 
-在开源上游的基础上，本项目额外实现了三处差异化的产品能力（均已在代码中落地、可通过真实数据验证）：
+PromptWorks 不是又一套「写完就跑」的提示词工具，而是把 Prompt 当作**可评测、可优化的产品资产**来运营：
 
 - **中文示例模板库**：内置 6 个贴合真实业务的中文 Prompt 模板（客服话术优化、信息抽取、长文摘要、文案改写、意图分类、数据分析），开箱即用，降低冷启动门槛。
 - **评测报告导出**：一键将 AI 评分结果渲染为自包含的中文 HTML 报告，浏览器「打印为 PDF」即可导出，方便评审与留档。
-- **车站翻牌时刻表视觉系统**：全新重做前端视觉，以「调度中心」为设计母题——暖墨色面板 + 琥珀信号灯 + 等宽数字，任务列表呈现为发车时刻表，低调而有辨识度。
-
-> 说明：本仓库为复刻改造项目，上游为 [YellowSeaa/PromptWorks](https://github.com/YellowSeaa/PromptWorks)（Apache 2.0）。
+- **调度中心式工作台**：以「Prompt 调度中心」为设计理念，任务列表呈现为发车时刻表——暖墨色面板、琥珀信号灯、等宽数字，让测试状态一目了然。
 
 ![](docs/frontend.png)
 
@@ -59,35 +57,28 @@ PromptWorks 新版重点强化了 AI 评估和自动优化能力。你可以先�
 - **统一配置**：通过根目录 `.env` 与前端 `VITE_` 前缀环境变量解耦各环境差异。
 
 ## 🚀 快速开始
-### 通过 Docker 部署（推荐）
-#### 1. **全栈一键启动**（默认拉取 main 渠道镜像）：
+### 方式一：本地开发（推荐）
+
+直接跑前后端（详见下方「通过本地代码启动」小节），热更新开发；生产部署可用仓库自带的 Docker 编排：
+
 ```bash
-docker compose pull backend frontend
+# 构建并启动全部服务（首次构建时间较长）
+docker compose build
 docker compose up -d
 ```
 
-- Compose 默认引用 `yellowseaa/promptworks:backend-main-latest` 与 `yellowseaa/promptworks:frontend-main-latest`，会自动启动 PostgreSQL 与 Redis。
-- 若想切换到 dev 渠道或指定具体版本，可在 `.env` 中设置 `BACKEND_IMAGE`、`FRONTEND_IMAGE`，或在命令前临时注入：  
-`BACKEND_IMAGE=yellowseaa/promptworks:backend-dev-latest FRONTEND_IMAGE=yellowseaa/promptworks:frontend-dev-latest docker compose up -d`
-
-#### 2. **仅运行后端**：需要单独调试 FastAPI 服务时，可直接拉取后端镜像：
-```bash
-docker pull yellowseaa/promptworks:backend-main-latest
-docker run -d --name promptworks-backend -p 8000:8000 yellowseaa/promptworks:backend-main-latest
-```
-> 自建部署时如需自定义域名、HTTPS 或前端 API 地址，可 fork 后通过新的标签重新构建推送。
-
-#### 3. **访问入口**
+#### 访问入口
 
 前端服务默认暴露在 `http://localhost:18080`，后端 API 为 `http://localhost:8000/api/v1`，数据库与 Redis 对应端口分别为 `15432` 与 `6379`。
 
-#### 4. **停止/清理**：
+#### 停止/清理
+
 ```bash
 docker compose down            # 停止容器
 docker compose down -v         # 停止并删除数据卷
 ```
 
-#### 5. **容器编排说明**
+#### 容器编排说明
 
 | 服务 | 说明 | 端口 | 额外信息 |
 | --- | --- | --- | --- |
@@ -96,9 +87,7 @@ docker compose down -v         # 停止并删除数据卷
 | `backend` | FastAPI 后端 | 8000 | 启动前自动执行 `alembic upgrade head` 同步结构 |
 | `frontend` | Nginx 托管的前端静态文件 | 18080 | 构建时可通过 `VITE_API_BASE_URL` 定制后端地址 |
 
-> 提示：如需自定义端口或数据库密码，可在 `docker-compose.yml` 中调整对应环境变量与端口映射（当前示例采用 `15432`、`18080`），然后重新执行 `docker compose up -d`。
->
-> ⚠️ Apple Silicon / ARM 设备：CI 默认将 `backend-*-latest` 与 `frontend-*-latest` 镜像发布为 `linux/amd64 + linux/arm64` 多架构 manifest，可直接拉取使用；若你自行构建镜像，请使用 `docker buildx build --platform linux/amd64,linux/arm64 ... --push`，否则 ARM 主机会提示 `no matching manifest for linux/arm64`。
+> 提示：如需自定义端口或数据库密码，可在 `docker-compose.yml` 中调整对应环境变量与端口映射，然后重新执行 `docker compose up -d`。
 
 ### 通过本地代码启动
 

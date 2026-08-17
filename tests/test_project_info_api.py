@@ -104,9 +104,9 @@ def test_project_info_summary_returns_metadata_and_counts(
     payload = response.json()
     assert payload["project"]["name"] == "PromptWorks"
     assert (
-        payload["project"]["github_url"] == "https://github.com/YellowSeaa/PromptWorks"
+        payload["project"]["github_url"] == "https://github.com/w3118597378-max/PromptWorks"
     )
-    assert payload["project"]["contact_email"] == "hh81300889@gmail.com"
+    assert payload["project"]["contact_email"] == ""
     assert payload["project"]["tutorial_available"] is False
     assert payload["version"]["current"] == _current_version()
     assert payload["version"]["deployment_type"] in {"source", "docker", "unknown"}
@@ -132,11 +132,11 @@ def test_project_info_check_version_uses_latest_release(
         def json(self) -> dict[str, str]:
             return {
                 "tag_name": latest_version,
-                "html_url": f"https://github.com/YellowSeaa/PromptWorks/releases/tag/{latest_version}",
+                "html_url": f"https://github.com/w3118597378-max/PromptWorks/releases/tag/{latest_version}",
             }
 
     def fake_get(url: str, timeout: float, headers: dict[str, str]) -> DummyResponse:
-        assert url.endswith("/repos/YellowSeaa/PromptWorks/releases/latest")
+        assert url.endswith("/repos/w3118597378-max/PromptWorks/releases/latest")
         assert timeout == 5.0
         assert headers["Accept"] == "application/vnd.github+json"
         return DummyResponse()
@@ -169,7 +169,7 @@ def test_project_info_check_version_ignores_older_release(
         def json(self) -> dict[str, str]:
             return {
                 "tag_name": "v0.1.0",
-                "html_url": "https://github.com/YellowSeaa/PromptWorks/releases/tag/v0.1.0",
+                "html_url": "https://github.com/w3118597378-max/PromptWorks/releases/tag/v0.1.0",
             }
 
     def fake_get(url: str, timeout: float, headers: dict[str, str]) -> DummyResponse:
