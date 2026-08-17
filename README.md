@@ -8,6 +8,16 @@ PromptWorks 是一个聚焦 Prompt 资产管理、批量评估与 AI 优化的�
 
 平台围绕一条完整工作流设计：**管理 Prompt → 配置测试任务 → 运行多模型/多版本评估 → AI 评分诊断 → 生成优化建议 → 沉淀为新版本**。无论是客服话术、信息抽取、智能问答还是内部业务助手，都可以用同一套流程持续验证和改进提示词质量。
 
+## ⭐ 本项目特色改造
+
+在开源上游的基础上，本项目额外实现了三处差异化的产品能力（均已在代码中落地、可通过真实数据验证）：
+
+- **中文示例模板库**：内置 6 个贴合真实业务的中文 Prompt 模板（客服话术优化、信息抽取、长文摘要、文案改写、意图分类、数据分析），开箱即用，降低冷启动门槛。
+- **评测报告导出**：一键将 AI 评分结果渲染为自包含的中文 HTML 报告，浏览器「打印为 PDF」即可导出，方便评审与留档。
+- **车站翻牌时刻表视觉系统**：全新重做前端视觉，以「调度中心」为设计母题——暖墨色面板 + 琥珀信号灯 + 等宽数字，任务列表呈现为发车时刻表，低调而有辨识度。
+
+> 说明：本仓库为复刻改造项目，上游为 [YellowSeaa/PromptWorks](https://github.com/YellowSeaa/PromptWorks)（Apache 2.0）。
+
 ![](docs/frontend.png)
 
 ## ✨ 核心能力
@@ -38,13 +48,13 @@ PromptWorks 新版重点强化了 AI 评估和自动优化能力。你可以先�
 - **质量复盘与优化沉淀**：把评分理由、优化建议和验证计划沉淀到版本迭代流程中，让 Prompt 优化可解释、可复现。
 
 ## 🧱 技术栈
-- **后端**：Python 3.10+、FastAPI、SQLAlchemy、Alembic、Redis、Celery。
+- **后端**：Python 3.10+、FastAPI、SQLAlchemy、Alembic、Redis。
 - **前端**：Vite、Vue 3（TypeScript）、Vue Router、Element Plus。
 - **工具链**：uv 进行依赖与任务管理，PoeThePoet 统一开发命令，pytest + coverage 保证质量。
 
 ## 🏗️ 系统架构
 - **后端服务**：位于 `app/` 目录，采用 FastAPI + SQLAlchemy 分层结构，业务逻辑集中在 `services/`。
-- **数据库与消息组件**：默认使用 PostgreSQL 与 Redis，可按需扩展 Celery 任务队列能力。
+- **数据库与消息组件**：默认使用 PostgreSQL 与 Redis。
 - **前端应用**：`frontend/` 目录基于 Vite 构建，提供 Prompt 管理与测试的交互界面。
 - **统一配置**：通过根目录 `.env` 与前端 `VITE_` 前缀环境变量解耦各环境差异。
 
@@ -203,7 +213,3 @@ npm run build
 3. 提交 Pull Request，并在描述中说明变更范围与验证方式；本地提交信息建议使用简短中文描述。
 
 欢迎提出 Issue 或改进建议，共建 PromptWorks！
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=YellowSeaa/PromptWorks&type=date&legend=top-left)](https://www.star-history.com/#YellowSeaa/PromptWorks&type=date&legend=top-left)

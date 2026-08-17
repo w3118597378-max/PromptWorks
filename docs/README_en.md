@@ -38,7 +38,7 @@ This loop is especially useful when prompts look similar but production behavior
 - **Quality Review and Optimization Records**: Turn scoring rationale, optimization recommendations, and validation plans into a repeatable prompt iteration process.
 
 ## 🧱 Tech Stack
-- **Backend**: Python 3.10+, FastAPI, SQLAlchemy, Alembic, Redis, Celery.
+- **Backend**: Python 3.10+, FastAPI, SQLAlchemy, Alembic, Redis.
 - **Frontend**: Vite, Vue 3 (TypeScript), Vue Router, Element Plus.
 - **Tooling**: `uv` for dependency and task management, PoeThePoet for unified commands, pytest + coverage for quality assurance.
 
