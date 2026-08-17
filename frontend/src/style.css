@@ -414,6 +414,106 @@ a {
   color: var(--lamp-amber);
 }
 
+/* ============================================================
+   组件形态收敛（编辑式方正 vs Element Plus 默认圆润）
+   ============================================================ */
+/* 卡片：收敛圆角 + 细边框 + 柔和暖阴影 */
+.el-card {
+  --el-card-border-color: var(--board-line);
+  --el-card-bg-color: var(--board-black);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+}
+
+.el-card__header {
+  color: var(--flap-dim);
+  font-weight: 600;
+  border-bottom: 1px solid var(--board-line);
+}
+
+/* 提示条：细边框，无大圆角/渐变 */
+.el-alert {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--board-line);
+  background: var(--board-black);
+}
+
+.el-alert__title {
+  color: var(--flap-white);
+}
+
+.el-alert--success {
+  border-color: rgba(90, 163, 120, 0.45);
+}
+
+.el-alert--warning {
+  border-color: rgba(217, 150, 47, 0.45);
+}
+
+.el-alert--error {
+  border-color: rgba(193, 87, 79, 0.5);
+}
+
+.el-alert--info {
+  border-color: var(--board-line-strong);
+}
+
+/* 弹窗：方角 + 细边 + 标题层 */
+.el-dialog__header {
+  padding: 16px 20px 0;
+}
+
+.el-dialog__title {
+  color: var(--flap-white);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.el-dialog__body {
+  color: var(--flap-dim);
+}
+
+.el-dialog__footer {
+  padding: 12px 20px 20px;
+}
+
+/* 折叠面板 */
+.el-collapse {
+  --el-collapse-border-color: var(--board-line);
+  border: none;
+}
+
+.el-collapse-item__header {
+  background: var(--board-black);
+  color: var(--flap-white);
+}
+
+.el-collapse-item__wrap {
+  background: var(--board-black);
+}
+
+/* 表格：去斑马纹条纹感 + 细分隔线 */
+.el-table__row--striped td.el-table__cell {
+  background: transparent;
+}
+
+.el-table td.el-table__cell,
+.el-table th.el-table__cell {
+  border-bottom: 1px solid var(--board-line);
+}
+
+/* 骨架屏：暖墨 */
+.el-skeleton__item {
+  background: var(--board-raised);
+}
+
+/* 统计数字/描述列表 */
+.el-statistic__number {
+  font-family: var(--font-display);
+  color: var(--lamp-amber);
+  font-variant-numeric: tabular-nums;
+}
+
 .el-table {
   --el-table-bg-color: transparent;
   --el-table-tr-bg-color: transparent;
