@@ -16,7 +16,6 @@ from app.schemas.llm_provider import (
     LLMUsageLogRead,
     LLMUsageMessage,
 )
-from app.schemas.metric import MetricCreate, MetricRead
 from app.schemas.prompt import (
     PromptClassRead,
     PromptClassCreate,
@@ -33,8 +32,6 @@ from app.schemas.prompt import (
     PromptVersionCreate,
     PromptVersionRead,
 )
-from app.schemas.result import ResultCreate, ResultRead
-from app.schemas.test_run import TestRunCreate, TestRunRead, TestRunUpdate
 from app.schemas.usage import UsageModelSummary, UsageOverview, UsageTimeseriesPoint
 from app.schemas.settings import TestingTimeoutsRead, TestingTimeoutsUpdate
 
@@ -62,13 +59,6 @@ __all__ = [
     "AnalysisTargetType",
     "AnalysisModuleDefinition",
     "ModuleExecutionRequest",
-    "TestRunCreate",
-    "TestRunUpdate",
-    "TestRunRead",
-    "ResultCreate",
-    "ResultRead",
-    "MetricCreate",
-    "MetricRead",
     "LLMProviderCreate",
     "LLMProviderUpdate",
     "LLMProviderRead",

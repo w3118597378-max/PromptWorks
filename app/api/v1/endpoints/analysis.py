@@ -17,7 +17,6 @@ from app.services.analysis_runner import (
     RequirementValidationError,
     UnknownModuleError,
     execute_module_for_prompt_test_task,
-    execute_module_for_test_run,
     serialize_analysis_result,
 )
 from app.services.analysis_registry import get_analysis_registry
@@ -41,10 +40,12 @@ def run_analysis_module(
     """执行指定的分析模块并返回结果。"""
 
     try:
-        if request.target_type == AnalysisTargetType.PROMPT_TEST_TASK:
-            result = execute_module_for_prompt_test_task(db, request)
-        else:
-            result = execute_module_for_test_run(db, request)
+        if request.target_type != AnalysisTargetType.PROMPT_TEST_TASK:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="仅支持 prompt_test_task 类型的分析目标。",
+            )
+        result = execute_module_for_prompt_test_task(db, request)
     except UnknownModuleError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
     except AnalysisTaskNotFoundError as exc:

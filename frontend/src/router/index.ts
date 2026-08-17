@@ -28,30 +28,6 @@ const router = createRouter({
       meta: { menu: 'prompt', title: '新增版本' }
     },
     {
-      path: '/prompts/:id/tests/new',
-      name: 'prompt-test-create',
-      component: () => import('../views/TestJobCreateView.vue'),
-      meta: { menu: 'prompt', title: '新增测试' }
-    },
-    {
-      path: '/tests/quick',
-      name: 'quick-test',
-      component: () => import('../views/QuickTestView.vue'),
-      meta: { menu: 'quick-test', title: '快速测试' }
-    },
-    {
-      path: '/tests/jobs',
-      name: 'test-job-management',
-      component: () => import('../views/TestJobManagementView.vue'),
-      meta: { menu: 'test-job', title: '测试任务' }
-    },
-    {
-      path: '/tests/jobs/new',
-      name: 'test-job-create',
-      component: () => import('../views/TestJobCreateView.vue'),
-      meta: { menu: 'test-job', title: '新建测试任务' }
-    },
-    {
       path: '/tests/tasks/new',
       name: 'prompt-test-task-create',
       component: () => import('../views/PromptTestTaskCreateView.vue'),
@@ -74,12 +50,6 @@ const router = createRouter({
       name: 'prompt-test-unit-result',
       component: () => import('../views/PromptTestUnitResultView.vue'),
       meta: { menu: 'test-job', title: '最小单元详情（新）' }
-    },
-    {
-      path: '/tests/jobs/:id',
-      name: 'test-job-result',
-      component: () => import('../views/TestJobResultView.vue'),
-      meta: { menu: 'test-job', title: '测试结果' }
     },
     {
       path: '/classes',

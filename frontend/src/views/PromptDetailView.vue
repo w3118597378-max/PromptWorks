@@ -283,9 +283,7 @@ import { usePromptDetail } from '../composables/usePromptDetail'
 import { listPromptClasses, type PromptClassStats } from '../api/promptClass'
 import { listPromptTags, type PromptTagStats } from '../api/promptTag'
 import { updatePrompt } from '../api/prompt'
-import { listTestRuns } from '../api/testRun'
 import { listPromptTestTasks } from '../api/promptTest'
-import type { TestRun } from '../types/testRun'
 import type { PromptTestTask } from '../types/promptTest'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
@@ -352,7 +350,7 @@ const selectedVersion = computed(() => {
   return match ?? prompt.current_version ?? null
 })
 
-type TestRecordType = 'legacy' | 'task'
+type TestRecordType = 'task'
 type TestRecordStatus = 'completed' | 'failed' | 'running' | 'pending'
 
 interface TestRecordRow {
@@ -373,7 +371,6 @@ interface TestRecordRow {
   disabledReason?: string | null
 }
 
-const testRuns = ref<TestRun[]>([])
 const promptTestTasks = ref<PromptTestTask[]>([])
 const testRunLoading = ref(false)
 const testRunError = ref<string | null>(null)
@@ -395,13 +392,6 @@ const testRecords = computed<TestRecordRow[]>(() => {
   const versionIdSet = new Set<number>()
   versionLabelMap.forEach((_, id) => {
     versionIdSet.add(id)
-  })
-
-  testRuns.value.forEach((run) => {
-    if (!isRunRelatedToPrompt(run, promptId, versionIdSet)) {
-      return
-    }
-    records.push(buildLegacyTestRecord(run, versionLabelMap))
   })
 
   promptTestTasks.value.forEach((task) => {
@@ -472,14 +462,6 @@ function mapPromptTestTaskStatus(status: string): 'pending' | 'running' | 'compl
   return 'pending'
 }
 
-function normalizeLegacyStatus(status: string | null | undefined): TestRecordStatus {
-  const normalized = typeof status === 'string' ? status.toLowerCase() : ''
-  if (normalized === 'completed') return 'completed'
-  if (normalized === 'failed') return 'failed'
-  if (normalized === 'running') return 'running'
-  return 'pending'
-}
-
 function safeDateValue(value: string): number {
   const time = new Date(value).getTime()
   if (Number.isNaN(time)) {
@@ -544,7 +526,6 @@ async function fetchMeta() {
 
 async function fetchTestRecords() {
   if (!currentId.value) {
-    testRuns.value = []
     promptTestTasks.value = []
     testRunError.value = null
     return
@@ -552,77 +533,12 @@ async function fetchTestRecords() {
   testRunLoading.value = true
   testRunError.value = null
   try {
-    const [runs, tasks] = await Promise.all([
-      listTestRuns({ limit: 200 }),
-      listPromptTestTasks()
-    ])
-    testRuns.value = runs
-    promptTestTasks.value = tasks
+    promptTestTasks.value = await listPromptTestTasks()
   } catch (error) {
     testRunError.value = extractTestRunError(error)
-    testRuns.value = []
     promptTestTasks.value = []
   } finally {
     testRunLoading.value = false
-  }
-}
-
-function isRunRelatedToPrompt(
-  run: TestRun,
-  promptId: number,
-  versionIdSet: Set<number>
-): boolean {
-  if (run.prompt?.id === promptId) {
-    return true
-  }
-  if (run.prompt_version?.prompt_id === promptId) {
-    return true
-  }
-  if (typeof run.prompt_version_id === 'number' && versionIdSet.has(run.prompt_version_id)) {
-    return true
-  }
-  return false
-}
-
-function buildLegacyTestRecord(
-  run: TestRun,
-  versionLabelMap: Map<number, string>
-): TestRecordRow {
-  const versionLabel =
-    run.prompt_version?.version ??
-    (typeof run.prompt_version_id === 'number'
-      ? versionLabelMap.get(run.prompt_version_id) ??
-        t('promptDetail.table.versionFallback', { id: run.prompt_version_id })
-      : t('promptDetail.content.versionFallback'))
-
-  const modelLabel = run.model_name?.trim() || '--'
-  const temperature =
-    typeof run.temperature === 'number' && !Number.isNaN(run.temperature)
-      ? run.temperature
-      : null
-  const repetitions =
-    typeof run.repetitions === 'number' && !Number.isNaN(run.repetitions)
-      ? run.repetitions
-      : 1
-  const statusKey = normalizeLegacyStatus(run.status)
-  const createdAtSource = run.created_at ?? run.updated_at ?? ''
-  const createdAtSortValue = createdAtSource ? safeDateValue(createdAtSource) : 0
-  const createdAtDisplay = createdAtSource ? formatDateTime(createdAtSource) : '--'
-
-  return {
-    key: `legacy-${run.id}`,
-    type: 'legacy',
-    taskName: '--',
-    versionLabel,
-    modelLabel,
-    temperature,
-    repetitions,
-    statusKey,
-    statusDisplay: statusLabel.value[statusKey] ?? statusKey,
-    createdAtDisplay,
-    createdAtSortValue,
-    canNavigate: typeof run.id === 'number' && run.id > 0,
-    runId: run.id
   }
 }
 
@@ -946,12 +862,6 @@ function handleViewTestRecord(record: TestRecordRow) {
   if (record.type === 'task' && record.taskId) {
     void router
       .push({ name: 'prompt-test-task-result', params: { taskId: String(record.taskId) } })
-      .catch(() => {})
-    return
-  }
-  if (record.runId) {
-    void router
-      .push({ name: 'test-job-result', params: { id: record.runId } })
       .catch(() => {})
     return
   }

@@ -6,7 +6,6 @@ from app.api.v1.endpoints import (
     prompt_classes,
     prompt_tags,
     prompts,
-    test_prompt,
     usage,
     prompt_test_tasks,
     project_info,
@@ -23,9 +22,6 @@ api_router.include_router(
 api_router.include_router(prompts.router, prefix="/prompts", tags=["prompts"])
 api_router.include_router(
     prompt_tags.router, prefix="/prompt-tags", tags=["prompt_tags"]
-)
-api_router.include_router(
-    test_prompt.router, prefix="/test_prompt", tags=["test_prompt"]
 )
 api_router.include_router(usage.router, prefix="/usage", tags=["usage"])
 api_router.include_router(

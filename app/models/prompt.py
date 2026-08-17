@@ -16,9 +16,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-if TYPE_CHECKING:
-    from app.models.test_run import TestRun
-
 from app.models.base import Base
 
 
@@ -178,9 +175,6 @@ class PromptVersion(Base):
         back_populates="versions",
         foreign_keys="PromptVersion.prompt_id",
         primaryjoin="PromptVersion.prompt_id == Prompt.id",
-    )
-    test_runs: Mapped[list["TestRun"]] = relationship(
-        "TestRun", back_populates="prompt_version", cascade="all, delete-orphan"
     )
 
 

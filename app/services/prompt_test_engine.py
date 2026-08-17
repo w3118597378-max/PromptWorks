@@ -25,7 +25,7 @@ from app.models.prompt_test import (
 from app.models.usage import LLMUsageLog
 from app.services.llm_context import truncate_messages_for_context
 from app.services.model_costs import apply_cost_to_usage_log, calculate_model_call_cost
-from app.services.test_run import (
+from app.services.llm_call_utils import (
     DEFAULT_CONCURRENCY_LIMIT,
     REQUEST_SLEEP_RANGE,
     _format_error_detail,

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
 import app.db.session as db_session_module
-from app.core.task_queue import task_queue
+from app.core.prompt_test_task_queue import task_queue
 from app.db.session import get_db
 from app.main import app
 from app.models import Base  # noqa: F401 - ensure models are loaded

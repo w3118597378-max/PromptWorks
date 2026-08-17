@@ -451,8 +451,7 @@ function syncSettingsFormFromRefs() {
 
 const menuItems = computed<MenuItem[]>(() => [
   { index: 'prompt', label: t('menu.prompt'), routeName: 'prompt-management', icon: Collection },
-  { index: 'quick-test', label: t('menu.quickTest'), routeName: 'quick-test', icon: MagicStick },
-  { index: 'test-job', label: t('menu.testJob'), routeName: 'test-job-management', icon: Memo },
+  { index: 'test-job', label: t('menu.testJob'), routeName: 'prompt-test-task-create', icon: Memo },
   { index: 'class', label: t('menu.class'), routeName: 'class-management', icon: Files },
   { index: 'tag', label: t('menu.tag'), routeName: 'tag-management', icon: Tickets },
   { index: 'llm', label: t('menu.llm'), routeName: 'llm-management', icon: Cpu },

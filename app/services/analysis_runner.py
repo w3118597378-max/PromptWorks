@@ -7,8 +7,6 @@ import pandas as pd
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
-from app.models.result import Result
-from app.models.test_run import TestRun
 from app.models.prompt_test import PromptTestTask, PromptTestUnit
 from app.schemas.analysis_module import (
     AnalysisContext,
@@ -55,13 +53,6 @@ def _parse_task_id(raw_task_id: str) -> int:
         raise AnalysisDataLoadError("任务标识无效，无法解析为整数。") from exc
 
 
-def _load_test_run(db: Session, task_id: int) -> TestRun:
-    test_run = db.get(TestRun, task_id)
-    if test_run is None:
-        raise AnalysisTaskNotFoundError(f"测试任务 {task_id} 不存在。")
-    return test_run
-
-
 def _load_prompt_test_task(db: Session, task_id: int) -> PromptTestTask:
     stmt = (
         select(PromptTestTask)
@@ -74,37 +65,6 @@ def _load_prompt_test_task(db: Session, task_id: int) -> PromptTestTask:
     if task is None:
         raise AnalysisTaskNotFoundError(f"测试任务 {task_id} 不存在。")
     return task
-
-
-def _load_results_dataframe(db: Session, task_id: int) -> pd.DataFrame:
-    stmt = (
-        select(
-            Result.id.label("result_id"),
-            Result.test_run_id,
-            Result.run_index,
-            Result.latency_ms,
-            Result.tokens_used,
-            Result.created_at,
-        )
-        .where(Result.test_run_id == task_id)
-        .order_by(Result.run_index.asc(), Result.id.asc())
-    )
-    rows = db.execute(stmt).mappings().all()
-
-    columns = [
-        "result_id",
-        "test_run_id",
-        "run_index",
-        "latency_ms",
-        "tokens_used",
-        "created_at",
-    ]
-
-    if not rows:
-        return pd.DataFrame(columns=columns)
-
-    records = [{column: row.get(column) for column in columns} for row in rows]
-    return pd.DataFrame.from_records(records, columns=columns)
 
 
 def _sanitize_records(data_frame: pd.DataFrame) -> list[dict[str, Any]]:
@@ -229,32 +189,6 @@ def get_execution_dependencies() -> AnalysisExecutionDependencies:
     )
 
 
-def execute_module_for_test_run(
-    db: Session,
-    request: ModuleExecutionRequest,
-    *,
-    user_id: int | None = None,
-    dependencies: AnalysisExecutionDependencies | None = None,
-) -> AnalysisResult:
-    deps = dependencies or get_execution_dependencies()
-    task_id = _parse_task_id(request.task_id)
-    test_run = _load_test_run(db, task_id)
-    data_frame = _load_results_dataframe(db, task_id)
-
-    context = AnalysisContext(
-        task_id=str(task_id),
-        user_id=user_id,
-        llm_client=None,
-        metadata={
-            "test_run_id": task_id,
-            "module_id": request.module_id,
-            "row_count": int(len(data_frame)),
-            "status": test_run.status.value if test_run.status else None,
-        },
-    )
-    return deps.execution_service.execute_now(data_frame, context, request)
-
-
 def execute_module_for_prompt_test_task(
     db: Session,
     request: ModuleExecutionRequest,
@@ -286,7 +220,6 @@ __all__ = [
     "AnalysisTaskNotFoundError",
     "AnalysisDataLoadError",
     "serialize_analysis_result",
-    "execute_module_for_test_run",
     "execute_module_for_prompt_test_task",
     "get_execution_dependencies",
     "UnknownModuleError",
